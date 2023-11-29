@@ -64,7 +64,7 @@ const menus = ref([
   {
     type: "single",
     title: "Início",
-    name: "DashboardPage",
+    name: "IndexPage",
     icon: "home",
   },
   {
@@ -82,32 +82,32 @@ const menus = ref([
   {
     type: "expansive",
     title: "Cadastros",
-    icon: "",
+    icon: "edit",
     childrens: [
       {
         title: "Produtos",
         name: "ProdutosPage",
-        icon: "product",
+        icon: "edit",
       },
       {
         title: "Tipos de Produtos",
         name: "TiposProdutosPage",
-        icon: "list",
+        icon: "edit",
       },
       {
         title: "Grupos de Produtos",
         name: "GruposProdutosPage",
-        icon: "groups",
+        icon: "edit",
       },
       {
         title: "Usuários",
         name: "UsuariosPage",
-        icon: "accounts",
+        icon: "groups",
       },
       {
         title: "Tipos de Usuários",
         name: "TiposUsuariosPage",
-        icon: "list",
+        icon: "groups",
       },
     ],
   },
