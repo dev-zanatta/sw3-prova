@@ -1,75 +1,95 @@
 <template>
   <q-page class="">
-    <div class="row q-col-gutter-md">
-
-      <q-input
-        v-model="descricao"
-        filled
-        dense
-        class="col-4"
-        label="Descrição"
-      />
-
-      <q-input
-        v-model="valor"
-        filled
-        dense
-        class="col-3"
-        label="Valor"
-      />
-
-      <q-input
-        v-model="quantidade"
-        filled
-        dense
-        class="col-3"
-        label="Quantidade"
-      />
-
+    <div class="row q-px-md q-pt-md">
+      <q-space/>
       <q-btn
-        color="secondary-1"
-        label="Salvar"
-        class="col-2"
-        @click="salvar"
+        color="primary-3"
+        label="Adicionar"
+        @click="adicionar"
       />
-
     </div>
 
     <q-table
-      :rows="produtos"
-    />
+      :key="tableKey"
+      :rows="tiposProdutos"
+      :rows-per-page-options="[20,30,50]"
+      :columns="columns"
+      class="q-pa-md q-ma-md"
+      open-item
+      @row-click="editar"
+    >
+      <template #body-cell-ativo="{row}">
+        <q-td class="text-center">
+          <q-chip
+            :color="row.ativo ? 'green' : 'red'"
+            :label="row.ativo ? 'Ativo' : 'Inativo'"
+          />
+        </q-td>
+      </template>
+    </q-table>
   </q-page>
 </template>
 
 <script setup>
+import { format, parseISO } from 'date-fns';
 import { useQuasar } from 'quasar';
 import { api } from 'src/boot/axios';
 import { onMounted, ref } from 'vue'
+import TipoProdutoAddEditDialog from 'src/components/cruds/TipoProdutoAddEditDialog.vue'
 
 const $q = useQuasar();
-const produtos = ref([]);
-const descricao = ref('');
-const valor = ref(0);
-const quantidade = ref(0);
+const tiposProdutos = ref([]);
+const tableKey = ref(0);
+const columns = [
+  {
+    name: 'descricao',
+    label: 'Descrição',
+    field: 'descricao',
+    align: 'left',
+    style: 'width:40%',
+    sortable: true
+  },
+  {
+    name: 'created_at',
+    label: 'Criado em',
+    field: 'created_at',
+    format: (val) => format(parseISO(val), 'dd/MM/yyyy HH:mm:ss'),
+    align: 'left',
+    sortable: true
+  },
+]
 
-const salvar = async () => {
-  const response = await api.post('/produtos', {
-    descricao: descricao.value,
-    valor: valor.value,
-    quantidade: quantidade.value
+const adicionar = () => {
+  $q.dialog({
+    component: TipoProdutoAddEditDialog,
+    componentProps: {
+      tipoProdutoId: null
+    },
+
+  }).onOk(async() => {
+    await getTiposProdutos();
   })
-  if(response.data.success) {
-    $q.notify({
-      color: 'green-4',
-      textColor: 'white',
-      icon: 'cloud_done',
-      message: 'Produto salvo com sucesso!'
-    })
-  }
+}
+
+const getTiposProdutos = async () => {
+  const response = await api.get('/tipos-produtos');
+  tiposProdutos.value = response.data.result;
+  tableKey.value++;
+}
+
+const editar = (evt, row) => {
+  $q.dialog({
+    component: TipoProdutoAddEditDialog,
+    componentProps: {
+      tipoProdutoId: row.id
+    },
+
+  }).onOk(async() => {
+    await getTiposProdutos();
+  })
 }
 
 onMounted( async () => {
-  const response = await api.get('/produtos');
-  produtos.value = response.data.result;
+  await getTiposProdutos();
 })
 </script>

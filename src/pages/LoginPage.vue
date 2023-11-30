@@ -22,10 +22,11 @@
         v-model="senha"
         label="Senha"
         lazy-rules
+        type="password"
         :rules="[(val) => !!val || 'Campo obrigatório']"
       />
 
-      <q-btn color="secondary-1" label="Logar" @click="login" />
+      <q-btn color="secondary-1" label="Logar" :loading="loading" @click="login"/>
     </div>
   </q-page>
 </template>
@@ -39,8 +40,9 @@ import { useRouter } from "vue-router";
 const email = ref("");
 const senha = ref("");
 const router = useRouter();
-
+const loading = ref(false);
 const login = async () => {
+  loading.value = true;
   const response = await api.post("/login", {
     email: email.value,
     password: senha.value,
@@ -54,6 +56,7 @@ const login = async () => {
 
     router.push({ name: 'IndexPage' })
   }
+  loading.value = false;
 };
 
 const voltar = () => {
