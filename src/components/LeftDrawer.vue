@@ -104,11 +104,6 @@ const menus = ref([
         name: "UsuariosPage",
         icon: "groups",
       },
-      {
-        title: "Tipos de Usuários",
-        name: "TiposUsuariosPage",
-        icon: "groups",
-      },
     ],
   },
 ]);

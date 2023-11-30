@@ -28,12 +28,6 @@ const routes = [
         meta: { requireAuth: true },
       },
       {
-        path: "tipos-usuarios",
-        component: () => import("pages/TiposUsuariosPage.vue"),
-        name: "TiposUsuariosPage",
-        meta: { requireAuth: true },
-      },
-      {
         path: "usuarios",
         component: () => import("pages/UsuariosPage.vue"),
         name: "UsuariosPage",
