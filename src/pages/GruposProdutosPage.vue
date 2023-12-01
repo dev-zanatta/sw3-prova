@@ -76,7 +76,7 @@ const editar = (evt, row) => {
       grupoProdutoId: row.id
     },
 
-  }).onOk(async() => {
+  }).onDismiss(async() => {
     await getGruposProdutos();
   })
 }

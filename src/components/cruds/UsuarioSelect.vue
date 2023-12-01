@@ -4,15 +4,15 @@
     fill-input
     clearable
     dense
-    :options="tiposProdutos"
+    :options="usuarios"
     option-value="id"
-    option-label="descricao"
-    label="Tipo de Produtos"
-    :model-value="tipoProduto"
+    option-label="name"
+    :label="props.label"
+    :model-value="usuario"
     :loading="loading"
     v-bind="$attrs"
     @filter="filterFn"
-    @update:model-value="(value) => emit('update:tipoProduto', value)"
+    @update:model-value="(value) => emit('update:usuario', value)"
   >
     <template #no-option>
       <q-item>
@@ -26,30 +26,40 @@
 import { api } from "src/boot/axios.js";
 import { ref } from "vue";
 
-const emit = defineEmits(["update:tipoProduto"]);
+const emit = defineEmits(["update:usuario"]);
 
 const loading = ref(false);
-const tiposProdutos = ref([]);
+const usuarios = ref([]);
 
 const props = defineProps({
-  tipoProduto: {
+  usuario: {
     type: Object,
     required: false,
     default: null,
   },
+  label: {
+    type: String,
+    required: false,
+    default: "Usuário",
+  },
+  clientes: {
+    type: Boolean,
+    required: false,
+    default: false,
+  },
 });
 
 const filterFn = async (val, update) => {
-  await getTiposProdutos();
+  await getUsuarios();
 
-  update(tiposProdutos.value);
+  update(usuarios.value);
 };
 
-const getTiposProdutos = async () => {
+const getUsuarios = async () => {
   loading.value = true;
 
-  const response = await api.get(`/tipos-produtos`);
-  tiposProdutos.value = response.data.result;
+  const response = await api.get(`/usuarios${props.clientes ? '?tipo=cliente' : ''}`);
+  usuarios.value = response.data.result;
 
   loading.value = false;
 };

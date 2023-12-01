@@ -54,6 +54,16 @@
               type="password"
             />
 
+            <!-- toggle for tipo cliente vendedor -->
+            <div class="row col-12">
+              <span class="q-my-auto">Cliente</span>
+              <q-toggle
+                v-model="tipoUsuario"
+                color="secondary-3"
+                class="q-my-auto"
+              />
+              <span class="q-my-auto">Vendedor</span>
+            </div>
           </q-form>
         </div>
       </q-card-section>
@@ -91,7 +101,7 @@ const usuario = ref({
   email: null,
   password: null,
 });
-
+const tipoUsuario = ref(false);
 const props = defineProps({
   usuarioId: {
     type: [String, Number],
@@ -106,7 +116,11 @@ const { dialogRef, onDialogHide, onDialogOK, onDialogCancel } =
 const adicionar = async () => {
   let response = null;
 
-
+  if(tipoUsuario.value){
+    usuario.value.tipo = 'vendedor'
+  }else{
+    usuario.value.tipo = 'cliente'
+  }
 
   if (props.usuarioId) {
     response = await api.put(`usuarios/${props.usuarioId}`, usuario.value);
@@ -123,6 +137,7 @@ onMounted(async () => {
   if (props.usuarioId) {
     const response = await api.get(`/usuarios/${props.usuarioId}`);
     usuario.value = response.data.result;
+    tipoUsuario.value = usuario.value.tipo_usuario === 'vendedor' ? true : false
   }
 });
 </script>

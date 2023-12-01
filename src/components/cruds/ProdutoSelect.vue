@@ -4,15 +4,16 @@
     fill-input
     clearable
     dense
-    :options="tiposProdutos"
+    multiple
+    :options="produtos"
     option-value="id"
     option-label="descricao"
-    label="Tipo de Produtos"
-    :model-value="tipoProduto"
+    label="Produtos"
+    :model-value="produto"
     :loading="loading"
     v-bind="$attrs"
     @filter="filterFn"
-    @update:model-value="(value) => emit('update:tipoProduto', value)"
+    @update:model-value="(value) => emit('update:produto', value)"
   >
     <template #no-option>
       <q-item>
@@ -26,13 +27,13 @@
 import { api } from "src/boot/axios.js";
 import { ref } from "vue";
 
-const emit = defineEmits(["update:tipoProduto"]);
+const emit = defineEmits(["update:produto"]);
 
 const loading = ref(false);
-const tiposProdutos = ref([]);
+const produtos = ref([]);
 
 const props = defineProps({
-  tipoProduto: {
+  produto: {
     type: Object,
     required: false,
     default: null,
@@ -40,16 +41,16 @@ const props = defineProps({
 });
 
 const filterFn = async (val, update) => {
-  await getTiposProdutos();
+  await getProdutos();
 
-  update(tiposProdutos.value);
+  update(produtos.value);
 };
 
-const getTiposProdutos = async () => {
+const getProdutos = async () => {
   loading.value = true;
 
-  const response = await api.get(`/tipos-produtos`);
-  tiposProdutos.value = response.data.result;
+  const response = await api.get(`/produtos`);
+  produtos.value = response.data.result;
 
   loading.value = false;
 };

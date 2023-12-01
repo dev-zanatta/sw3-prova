@@ -84,7 +84,7 @@ const editar = (evt, row) => {
       tipoProdutoId: row.id
     },
 
-  }).onOk(async() => {
+  }).onDismiss(async() => {
     await getTiposProdutos();
   })
 }

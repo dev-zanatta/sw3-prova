@@ -91,7 +91,7 @@ const editar = (evt, row) => {
       usuarioId: row.id
     },
 
-  }).onOk(async() => {
+  }).onDismiss(async() => {
     await getTiposProdutos();
   })
 }

@@ -26,6 +26,14 @@
           />
         </q-td>
       </template>
+      <template #body-cell-descricao="{row}">
+        <q-td style="width: 40%" >
+            {{ row.descricao }}
+            <q-chip dense v-if="row.tipo_produto">
+              {{ row.tipo_produto.descricao }}
+            </q-chip>
+        </q-td>
+      </template>
     </q-table>
   </q-page>
 </template>
@@ -106,14 +114,14 @@ const editar = (evt, row) => {
       produtoId: row.id
     },
 
-  }).onOk(async() => {
+  }).onDismiss(async() => {
     produtos.value = produtos.value.map((produto) => {
       if (produto.id === row.id) {
         produto.ativo = false;
       }
       return produto;
     });
-    await getTiposProdutos();
+    await getProdutos();
   })
 }
 

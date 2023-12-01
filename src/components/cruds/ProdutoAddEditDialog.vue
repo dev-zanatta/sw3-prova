@@ -17,7 +17,7 @@
             <q-input
               v-model="produto.descricao"
               outlined
-              :class="add ? 'col-12' : 'col-9'"
+              :class="add ? 'col-12' : 'col-8'"
               dense
               label="Descrição"
               hint="Campo obrigatório"
@@ -33,7 +33,7 @@
               dense
               outlined
               color="secondary-3"
-              class="col-3 q-input-remove-all-border"
+              class="col-4 q-input-remove-all-border"
               readonly
             >
               <q-toggle
@@ -66,7 +66,7 @@
 
             <!-- Quantidade -->
             <q-input
-              v-model="produto.quantidade"
+              v-model="produto.estoque"
               outlined
               class="col-6"
               dense
@@ -91,12 +91,11 @@
             <div v-for="(grupo, index) in grupoProduto" :key="index">
               <q-chip
                 removable
-                color="secondary-3"
-                class="col-12"
+                class="col-12 q-pa-sm text-secondary-3"
                 dense
                 outlined
                 :label="grupo.descricao"
-                @remove="grupoProduto = null"
+                @remove="removeGrupoProduto(index)"
               />
 
             </div>
@@ -125,7 +124,7 @@
 s
 
 <script setup>
-import { onMounted, ref, computed } from "vue";
+import { onMounted, ref, computed, watch } from "vue";
 import { useDialogPluginComponent } from "quasar";
 import { api } from "src/boot/axios.js";
 import TipoProdutoSelect from 'src/components/cruds/TipoProdutoSelect.vue'
@@ -137,7 +136,7 @@ const addProdutoForm_ref = ref(null);
 const produto = ref({
   descricao: null,
   valor: null,
-  quantidade: null,
+  estoque: null,
   ativo: true,
 });
 const tipoProduto = ref(null);
@@ -160,6 +159,8 @@ const { dialogRef, onDialogHide, onDialogOK, onDialogCancel } =
 const adicionar = async () => {
   let response = null;
 
+  produto.value.grupos_produtos_ids = grupoProduto.value.map((grupo) => grupo.id);
+
   if (props.produtoId) {
     response = await api.put(`produtos/${props.produtoId}`, produto.value);
   } else {
@@ -171,10 +172,22 @@ const adicionar = async () => {
   }
 };
 
+const removeGrupoProduto = (index) => {
+  grupoProduto.value.splice(index, 1);
+};
+
+watch(tipoProduto, () => {
+  if(tipoProduto.value) {
+    produto.value.tipo_produto_id = tipoProduto.value.id
+  }
+})
+
 onMounted(async () => {
   if (props.produtoId) {
     const response = await api.get(`/produtos/${props.produtoId}`);
     produto.value = response.data.result;
+    tipoProduto.value = produto.value.tipo_produto;
+    grupoProduto.value = produto.value.grupos_produtos;
   }
 });
 </script>

@@ -14,6 +14,7 @@
         v-model="email"
         label="Email"
         lazy-rules
+        color="secondary-1"
         :rules="[(val) => !!val || 'Campo obrigatório']"
       />
       <q-input
@@ -23,6 +24,7 @@
         label="Senha"
         lazy-rules
         type="password"
+        color="secondary-1"
         :rules="[(val) => !!val || 'Campo obrigatório']"
       />
 
