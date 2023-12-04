@@ -14,8 +14,24 @@
       :rows="vendas"
       :rows-per-page-options="[20,30,50]"
       :columns="columns"
+      open-item
+      @row-click="editar"
       class="q-pa-md q-ma-md"
     >
+      <template #body-cell-cliente="{row}">
+        <q-td>
+          <div>
+            {{ row.usuario_comprou.name }}
+          </div>
+        </q-td>
+      </template>
+      <template #body-cell-vendedor="{row}">
+        <q-td>
+          <div>
+            {{ row.usuario_vendeu.name }}
+          </div>
+        </q-td>
+      </template>
     </q-table>
   </q-page>
 </template>
@@ -32,23 +48,17 @@ const vendas = ref([]);
 const tableKey = ref(0);
 const columns = [
   {
-    name: 'produto',
-    label: 'Produto',
-    align: 'left',
-    style: 'width:40%',
-    sortable: true
-  },
-  {
     name: 'cliente',
     label: 'Cliente',
     align: 'left',
+    style: 'width:30%',
     sortable: true
   },
   {
     name: 'vendedor',
     label: 'Vendedor',
-    field: '',
     align: 'left',
+    style: 'width:30%',
     sortable: true
   },
   {
@@ -62,7 +72,7 @@ const columns = [
   {
     name: 'data_hora_venda',
     label: 'Vendido em',
-    field: 'data_hora_venda',
+    field: 'created_at',
     format: (val) => format(parseISO(val), 'dd/MM/yyyy HH:mm:ss'),
     align: 'left',
     sortable: true
@@ -77,6 +87,19 @@ const adicionar = () => {
     },
 
   }).onOk(async(data) => {
+    await getVendas();
+  })
+}
+
+const editar = (evt, row) => {
+  console.log(row)
+  $q.dialog({
+    component: VendaAddEditDialog,
+    componentProps: {
+      vendaId: row.id
+    },
+
+  }).onOk(async() => {
     await getVendas();
   })
 }

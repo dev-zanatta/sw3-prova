@@ -55,8 +55,12 @@
           </q-form>
         </div>
       </q-card-section>
-      <div class="row q-pa-md self-end justify-end">
+      <div class="row q-pa-md">
+        <div v-if="!props.vendaId">Valor Total: {{ parseFloat(valorTotal).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' }) }}</div>
+        <div v-if="props.vendaId">Valor Total: {{ parseFloat(valorTotal).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' }) }}</div>
+        <q-space/>
         <q-btn
+          v-if="!props.vendaId"
           flat
           color="primary-5 button"
           padding="12px 16px"
@@ -65,6 +69,7 @@
           @click="onDialogCancel"
         />
         <q-btn
+          v-if="!props.vendaId"
           color="primary-3 text-black button-primary"
           padding="12px 16px"
           label="Salvar"
@@ -77,17 +82,32 @@
 s
 
 <script setup>
-import { ref, computed } from "vue";
-import { useDialogPluginComponent } from "quasar";
+import { ref, computed, onMounted } from "vue";
+import { useDialogPluginComponent, useQuasar } from "quasar";
 import { api } from "src/boot/axios.js";
 import ProdutoSelect from 'src/components/cruds/ProdutoSelect.vue'
 import UsuarioSelect from 'src/components/cruds/UsuarioSelect.vue'
 
 defineEmits([...useDialogPluginComponent.emits]);
 
+const $q = useQuasar();
 const addProdutoForm_ref = ref(null);
 const cliente = ref(null);
 const produtos = ref([]);
+const valorTotal = computed(() => {
+  let total = 0;
+
+  if(props.vendaId) {
+    produtos.value.forEach((produto) => {
+      total += produto.valor_total;
+    });
+  } else {
+    produtos.value.forEach((produto) => {
+      total += produto.valor * produto.quantidade;
+    });
+  }
+  return total;
+})
 
 const props = defineProps({
   vendaId: {
@@ -115,10 +135,33 @@ const adicionar = async () => {
 
   if (response.data.success) {
     onDialogOK();
+  } else {
+    $q.notify({
+      type: "negative",
+      message: response.data.message,
+    });
   }
 };
 
 const removeProduto = (index) => {
   produtos.value.splice(index, 1);
 };
+
+const getVenda = async () => {
+  const response = await api.get(`/vendas/${props.vendaId}`);
+  cliente.value = response.data.result.usuario_comprou;
+  produtos.value = response.data.result.venda_itens;
+
+  produtos.value.forEach((produto) => {
+    produto.venda_item_id = produto.id;
+    produto.id = produto.produto.id;
+    produto.descricao = produto.produto.descricao;
+  });
+}
+
+onMounted( async () => {
+  if (props.vendaId) {
+    await getVenda();
+  }
+});
 </script>
