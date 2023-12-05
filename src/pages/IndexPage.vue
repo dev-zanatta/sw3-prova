@@ -2,7 +2,7 @@
   <q-page class="">
     <div class="row">
 
-      Página principal
+      Bem Vindo
 
     </div>
   </q-page>

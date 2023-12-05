@@ -56,8 +56,8 @@
         </div>
       </q-card-section>
       <div class="row q-pa-md">
-        <div v-if="!props.vendaId">Valor Total: {{ parseFloat(valorTotal).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' }) }}</div>
-        <div v-if="props.vendaId">Valor Total: {{ parseFloat(valorTotal).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' }) }}</div>
+        <div v-if="valorTotal">Valor Total: {{ parseFloat(valorTotal).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' }) }}</div>
+        <!-- <div v-if="props.vendaId">Valor Total: {{ parseFloat(valorTotal).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' }) }}</div> -->
         <q-space/>
         <q-btn
           v-if="!props.vendaId"
@@ -130,6 +130,7 @@ const adicionar = async () => {
   let data = {
     cliente_id: cliente.value.id,
     produtos: produtos.value,
+    soma_valor: valorTotal.value,
   }
   response = await api.post("vendas", data);
 

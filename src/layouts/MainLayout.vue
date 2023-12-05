@@ -2,7 +2,7 @@
   <q-layout view="lHh Lpr lFf" class="">
     <q-header elevated class="bg-secondary-1">
       <q-toolbar class="h5 text-font">
-        <span class="q-pa-md">Olá, Usuário</span>
+        <span class="q-pa-md">Olá</span>
         <q-space/>
         <q-btn label="Sair" flat @click="deslogar"/>
       </q-toolbar>
