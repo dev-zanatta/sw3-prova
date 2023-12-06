@@ -9,7 +9,7 @@ import { Cookies } from "quasar";
 // "export default () => {}" function below (which runs individually
 // for each client)
 const api = axios.create({
-  baseURL: "http://api.gussw3final.systems/api",
+  baseURL: "https://api.gussw3final.systems/api",
 });
 
 api.interceptors.request.use(
